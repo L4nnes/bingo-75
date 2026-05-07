@@ -1,0 +1,428 @@
+:root {
+  --bg: #050505;
+  --line: rgba(255, 255, 255, 0.12);
+  --muted: rgba(255, 255, 255, 0.34);
+  --text: #f5f7fb;
+  --accent: #ffd84d;
+  --accent-2: #2fffc2;
+  --button: #202530;
+  --button-hover: #2a3140;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --app-height: 100dvh;
+  --board-fr: 55fr;
+  --draw-fr: 35fr;
+  --history-fr: 10fr;
+  --board-font: 24px;
+  --letter-font: 20px;
+  --cell-gap: 4px;
+  --cell-radius: 8px;
+  --panel-pad: 10px;
+  --handle-width: 24px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--button);
+  color: var(--text);
+  padding: 10px 14px;
+  font-size: clamp(12px, 1.6vw, 16px);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px var(--shadow);
+}
+button:hover { background: var(--button-hover); }
+button:active { transform: scale(0.98); }
+button.primary { background: linear-gradient(135deg, #ffd84d, #ffac33); color: #080808; border: none; }
+button.danger { background: #3b1111; color: #ffdede; border-color: rgba(255, 77, 77, 0.6); }
+button.danger-light { background: #24161a; color: #ffdede; border-color: rgba(255, 77, 77, 0.25); }
+
+.app-shell {
+  width: 100vw;
+  height: 100vh;
+  height: var(--app-height);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  display: grid;
+  grid-template-rows: 30px minmax(0, 1fr);
+  background:
+    radial-gradient(circle at 70% 20%, rgba(255, 216, 77, 0.08), transparent 25%),
+    radial-gradient(circle at 10% 80%, rgba(47, 255, 194, 0.05), transparent 28%),
+    var(--bg);
+}
+
+.top-bar {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px 0;
+}
+.progress-track { height: 8px; background: rgba(255,255,255,.08); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,.06); }
+.progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 999px; transition: width 180ms ease; }
+.top-meta { display: flex; gap: 8px; align-items: center; font-weight: 800; font-size: clamp(11px, 1.5vw, 15px); color: rgba(255,255,255,.72); white-space: nowrap; }
+.status-pill { color: var(--accent); }
+
+.screen-grid {
+  min-height: 0;
+  padding: 10px 12px 8px;
+  display: grid;
+  grid-template-columns: minmax(230px, var(--board-fr)) var(--handle-width) minmax(180px, var(--draw-fr)) var(--handle-width) minmax(72px, var(--history-fr));
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0;
+  align-items: stretch;
+}
+
+.board-panel,
+.draw-panel,
+.history-panel,
+.controls {
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+  background: rgba(13, 15, 18, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 12px 32px var(--shadow);
+}
+
+.board-panel {
+  grid-column: 1;
+  grid-row: 1;
+  padding: var(--panel-pad);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 6px;
+  overflow: hidden;
+}
+.manual-mode .board-panel {
+  border-color: rgba(255,216,77,.7);
+  box-shadow: 0 0 0 2px rgba(255,216,77,.12), 0 12px 32px var(--shadow);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.manual-banner {
+  padding: 7px 10px;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(255,216,77,.95);
+  color: #080808;
+  font-size: clamp(9px, 1.4vw, 13px);
+  line-height: 1.05;
+  font-weight: 1000;
+  box-shadow: 0 8px 18px rgba(0,0,0,.28);
+}
+.manual-banner span { font-size: .88em; font-weight: 800; }
+
+.bingo-board {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: .65fr repeat(15, 1fr) .65fr;
+  gap: var(--cell-gap);
+}
+.cell {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--cell-radius);
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.025);
+  color: var(--muted);
+  font-size: var(--board-font);
+  font-weight: 900;
+  letter-spacing: .04em;
+  line-height: 1;
+  transition: all 140ms ease;
+}
+.cell.letter {
+  background: rgba(255,216,77,.08);
+  border-color: rgba(255,216,77,.25);
+  color: var(--accent);
+  font-size: var(--letter-font);
+}
+.cell.number-cell { cursor: default; }
+.manual-mode .cell.number-cell { cursor: pointer; }
+.manual-mode .cell.number-cell:hover { border-color: rgba(255,216,77,.65); filter: brightness(1.18); }
+.cell.drawn { background: linear-gradient(135deg, rgba(255,216,77,.95), rgba(255,172,51,.95)); color: #080808; border-color: rgba(255,255,255,.55); text-shadow: none; box-shadow: 0 0 20px rgba(255,216,77,.18); }
+
+.resize-handle {
+  grid-row: 1;
+  position: relative;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  cursor: col-resize;
+  touch-action: none;
+  min-width: var(--handle-width);
+  overflow: visible;
+}
+#resize-handle-left { grid-column: 2; }
+#resize-handle-right { grid-column: 4; }
+.resize-handle::before {
+  content: "";
+  position: relative;
+  z-index: 31;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd84d, #ffac33);
+  border: 2px solid rgba(255,255,255,.34);
+  box-shadow: 0 6px 18px rgba(0,0,0,.55), 0 0 18px rgba(255,216,77,.28);
+  opacity: .9;
+}
+.resize-handle:hover::before,
+.resize-handle.active::before { opacity: 1; transform: scale(1.08); }
+
+.draw-panel {
+  grid-column: 3;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: hidden;
+}
+.last-number { width: 100%; text-align: center; font-size: clamp(58px, 15vw, 220px); line-height: .9; font-weight: 1000; letter-spacing: -.06em; color: var(--text); text-shadow: 0 0 32px rgba(255,216,77,.22), 0 12px 30px rgba(0,0,0,.48); }
+.last-number.bingo-title { letter-spacing: -.04em; }
+.last-number.pulse { animation: pulseNumber 520ms ease-out; }
+@keyframes pulseNumber { 0% { transform: scale(.86); filter: brightness(1.5); } 42% { transform: scale(1.08); filter: brightness(1.7); color: var(--accent); } 100% { transform: scale(1); filter: brightness(1); } }
+.end-message { position: absolute; bottom: 18px; left: 18px; right: 18px; text-align: center; color: var(--accent); font-size: clamp(13px, 1.8vw, 18px); font-weight: 800; }
+.hidden { display: none !important; }
+
+.history-panel {
+  grid-column: 5;
+  grid-row: 1;
+  padding: 12px 8px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  overflow: hidden;
+}
+.history-title { text-align: center; font-size: clamp(9px, 1.15vw, 13px); text-transform: uppercase; color: rgba(255,255,255,.55); letter-spacing: .08em; font-weight: 900; line-height: 1.1; }
+.recent-history { min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0; padding: 0 2px 0 0; list-style: none; display: grid; align-content: start; gap: 6px; }
+.recent-history li { display: grid; place-items: center; min-height: 30px; border-radius: 12px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.08); color: rgba(255,255,255,.74); font-size: clamp(12px, 2.2vh, 21px); font-weight: 900; }
+
+.controls {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 8px;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 8px;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.compact-only { display: none; }
+.controls.hidden-controls { opacity: 0; pointer-events: none; transform: translateY(20px); }
+.show-controls-hotspot { position: fixed; right: 12px; bottom: 12px; z-index: 50; opacity: .72; }
+
+.orientation-warning { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.94); color: var(--text); place-items: center; text-align: center; padding: 28px; font-size: clamp(28px, 8vw, 54px); font-weight: 1000; }
+
+.modal { width: min(900px, 92vw); max-height: 86vh; border: 1px solid var(--line); border-radius: 22px; background: #0a0c10; color: var(--text); box-shadow: 0 20px 80px rgba(0,0,0,.65); }
+.modal::backdrop { background: rgba(0,0,0,.75); }
+.modal-content { padding: 18px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.modal-header h2 { margin: 0; font-size: 24px; }
+.modal-description { color: rgba(255,255,255,.62); }
+.full-history { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 8px; overflow: auto; max-height: 56vh; padding-right: 4px; }
+.history-chip { min-height: 72px; border-radius: 12px; padding: 9px 8px; text-align: center; background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.1); font-weight: 900; display: grid; place-items: center; gap: 4px; }
+.draw-order { color: var(--accent); font-size: 18px; line-height: 1; }
+.draw-call { color: var(--text); font-size: 20px; line-height: 1; }
+
+.history-hidden .screen-grid { grid-template-columns: minmax(230px, var(--board-fr)) var(--handle-width) minmax(180px, 1fr) 0 0; }
+.history-hidden #resize-handle-right,
+.history-hidden .history-panel { display: none; }
+
+@media (orientation: portrait) and (max-width: 900px) {
+  .orientation-warning { display: grid; }
+}
+
+@media (max-width: 920px) and (orientation: landscape), (max-height: 460px) and (orientation: landscape) {
+  :root { --handle-width: 18px; --panel-pad: 5px; --cell-gap: 1px; --cell-radius: 4px; }
+  .app-shell { grid-template-rows: 20px minmax(0, 1fr); }
+  .top-bar { padding: 3px 6px 0; gap: 6px; }
+  .progress-track { height: 6px; }
+  .top-meta { font-size: 10px; }
+  .screen-grid {
+    padding: 4px 6px 5px;
+    grid-template-columns: minmax(160px, var(--board-fr)) var(--handle-width) minmax(110px, var(--draw-fr)) var(--handle-width) minmax(62px, var(--history-fr)) minmax(78px, 9vw);
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .history-hidden .screen-grid {
+    grid-template-columns: minmax(170px, var(--board-fr)) var(--handle-width) minmax(130px, 1fr) 0 0 minmax(78px, 9vw);
+  }
+  .board-panel, .draw-panel, .history-panel, .controls { border-radius: 12px; }
+  .draw-panel { padding: 7px; }
+  .history-panel { padding: 7px 4px; gap: 5px; }
+  .history-title { font-size: 8px; letter-spacing: .04em; }
+  .recent-history { gap: 4px; }
+  .recent-history li { min-height: 19px; border-radius: 7px; font-size: clamp(9px, 2.4vh, 14px); }
+  .last-number { font-size: clamp(38px, 12vw, 120px); }
+  .resize-handle::before { width: 24px; height: 24px; }
+  .manual-banner { padding: 4px 6px; font-size: 8px; border-radius: 8px; }
+
+  .controls {
+    grid-column: 6;
+    grid-row: 1;
+    margin-top: 0;
+    padding: 5px;
+    display: grid;
+    grid-auto-rows: min-content;
+    align-content: start;
+    justify-items: stretch;
+    gap: 5px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .compact-only { display: block; }
+  .controls button { width: 100%; padding: 7px 5px; border-radius: 8px; font-size: 10px; line-height: 1.05; }
+  .controls .secondary-control { display: none; }
+  .controls.more-open .secondary-control { display: block; }
+  .controls.more-open { align-content: start; }
+}
+
+@media (max-height: 360px) and (orientation: landscape) {
+  .app-shell { grid-template-rows: 16px minmax(0, 1fr); }
+  .top-bar { padding-top: 2px; }
+  .progress-track { height: 4px; }
+  .top-meta { font-size: 9px; }
+  .screen-grid { padding: 3px 4px 4px; }
+  .controls { padding: 4px; gap: 4px; }
+  .controls button { padding: 5px 4px; font-size: 9px; }
+  .last-number { font-size: clamp(32px, 11vw, 95px); }
+  .recent-history li { min-height: 16px; font-size: 9px; }
+}
+
+
+/* Ajuste v4:
+   No modo compacto/celular, "Ocultar controles" fica indisponível,
+   porque ocultaria o próprio 4º bloco de controle. O menu "Mais"
+   agora fecha com o botão "Mostrar menos". */
+.show-less-control {
+  display: none;
+}
+
+@media (max-width: 920px) and (orientation: landscape) {
+  .controls .desktop-only {
+    display: none !important;
+  }
+
+  .controls .show-less-control {
+    display: none !important;
+  }
+
+  .controls.more-open .show-less-control {
+    display: block !important;
+    margin-top: 4px;
+    background: #151923;
+    border-color: rgba(255, 216, 77, 0.35);
+    color: var(--accent);
+  }
+
+  .controls.more-open #more-btn {
+    display: none;
+  }
+}
+
+
+/* Ajuste v5:
+   O aviso do modo manual deve ficar sempre em uma única linha.
+   A fonte usa clamp com vw/dvh e o texto não quebra. */
+.manual-banner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  font-size: clamp(7px, min(1.35vw, 2.6dvh), 14px);
+  line-height: 1;
+  min-height: 0;
+}
+
+.board-panel.manual-layout-active {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+@media (max-width: 920px) and (orientation: landscape) {
+  .manual-banner {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    font-size: clamp(6px, min(1.15vw, 2.35dvh), 10px);
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .manual-banner {
+    font-size: clamp(5px, min(1vw, 2.1dvh), 8px);
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+}
+
+
+/* Ajuste v6:
+   Força o aviso do modo manual a ser uma única linha real.
+   Não deixa quebrar, não aceita wrap e reduz fonte conforme a largura do bloco. */
+.board-panel {
+  container-type: inline-size;
+}
+
+.manual-banner {
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+  line-height: 1 !important;
+  font-size: clamp(5px, 2.35cqw, 13px) !important;
+  letter-spacing: -0.035em;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+.manual-banner.hidden {
+  display: none !important;
+}
+
+@media (max-width: 920px) and (orientation: landscape) {
+  .manual-banner {
+    font-size: clamp(4px, 2.05cqw, 9px) !important;
+    letter-spacing: -0.055em;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+  }
+}
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .manual-banner {
+    font-size: clamp(4px, 1.85cqw, 7px) !important;
+    letter-spacing: -0.065em;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+  }
+}
