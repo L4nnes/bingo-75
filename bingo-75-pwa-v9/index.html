@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Bingo 75" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Bingo 75</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="orientation-warning" class="orientation-warning">
+    <div>Vire o celular para usar no modo projetor</div>
+  </div>
+
+  <main class="app-shell">
+    <header class="top-bar">
+      <div class="progress-track" aria-label="Progresso do bingo">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+      <div class="top-meta">
+        <span id="counter">0 / 75</span>
+        <span id="status-pill" class="status-pill">Pronto</span>
+      </div>
+    </header>
+
+    <section id="screen-grid" class="screen-grid">
+      <section class="board-panel" aria-label="Tabela do Bingo 75">
+        <div id="manual-banner" class="manual-banner hidden">MODO MANUAL ATIVO - toque nos números para marcar/desmarcar</div>
+        <div id="bingo-board" class="bingo-board"></div>
+      </section>
+
+      <div id="resize-handle-left" class="resize-handle" title="Arraste para redimensionar"></div>
+
+      <section class="draw-panel" aria-label="Último número sorteado">
+        <div id="last-number" class="last-number">BINGO</div>
+        <div id="end-message" class="end-message hidden">Todos os números foram sorteados</div>
+      </section>
+
+      <div id="resize-handle-right" class="resize-handle" title="Arraste para redimensionar"></div>
+
+      <aside id="history-panel" class="history-panel" aria-label="Últimos números sorteados">
+        <div class="history-title">Últimos sorteados</div>
+        <ol id="recent-history" class="recent-history"></ol>
+      </aside>
+
+      <section id="controls" class="controls" aria-label="Controles do bingo">
+        <button id="draw-btn" class="primary main-control">Sortear</button>
+        <button id="recall-btn" class="main-control">Repetir</button>
+        <button id="conference-btn" class="main-control">Conferir</button>
+        <button id="more-btn" class="main-control compact-only">Mais</button>
+
+        <button id="undo-btn" class="danger-light secondary-control">Desfazer</button>
+        <button id="manual-btn" class="secondary-control">Manual</button>
+        <button id="reset-layout-btn" class="secondary-control">Resetar layout</button>
+        <button id="history-toggle-btn" class="secondary-control">Mostrar histórico</button>
+        <button id="sound-toggle-btn" class="secondary-control">Som: ligado</button>
+        <button id="fullscreen-btn" class="secondary-control">Tela cheia</button>
+        <button id="hide-controls-btn" class="secondary-control desktop-only">Ocultar controles</button>
+        <button id="reset-btn" class="danger secondary-control">Reiniciar</button>
+        <button id="less-btn" class="secondary-control compact-only show-less-control">Mostrar menos</button>
+      </section>
+    </section>
+
+    <button id="show-controls-hotspot" class="show-controls-hotspot hidden" title="Mostrar controles">Controles</button>
+  </main>
+
+  <dialog id="conference-modal" class="modal">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2>Conferência</h2>
+        <button class="close-modal" data-close-modal>Fechar</button>
+      </header>
+      <p class="modal-description">Números sorteados em ordem:</p>
+      <div id="full-history" class="full-history"></div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
