@@ -87,3 +87,39 @@ MODO MANUAL ATIVO - toque nos números para marcar/desmarcar
 ```
 
 Foram adicionadas regras para impedir quebra de linha, reduzir a fonte conforme a largura do bloco e evitar wrap automático.
+
+
+## Ajuste v7
+
+No celular em modo paisagem, o bloco de controles continua visível. Para evitar que ele tampe ou reduza demais o “BINGO”, a tabela foi comprimida de forma mais agressiva e o bloco central ganhou mais largura.
+
+Arquivos alterados nesta versão:
+- `style.css`
+- `service-worker.js`
+- `README.md`
+
+
+## Ajuste v8
+
+A tela inicial agora oculta a tabela, assim como já fazia com o histórico.
+
+Antes do primeiro sorteio aparecem apenas:
+- bloco central com “BINGO”;
+- controles.
+
+A tabela volta automaticamente quando:
+- o primeiro número é sorteado;
+- o modo manual é ativado.
+
+
+## Ajuste v9
+
+Corrigido o redimensionamento por bolinhas.
+
+A causa era o CSS do modo celular, que fixava as larguras dos blocos com `!important` e anulava as variáveis alteradas pelo JavaScript durante o arraste.
+
+Agora:
+- as bolinhas voltam a redimensionar;
+- a tela inicial ainda mostra apenas “BINGO” + controles;
+- a tabela aparece após o primeiro sorteio ou ao ativar o modo manual;
+- no celular, os controles continuam visíveis.

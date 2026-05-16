@@ -193,6 +193,7 @@ function render() {
   lastNumberEl.classList.toggle("bingo-title", !last);
 
   const count = state.history.length;
+  document.body.classList.toggle("board-hidden", count === 0 && !state.manualMode);
   counterEl.textContent = `${count} / 75`;
   progressFillEl.style.width = `${(count / 75) * 100}%`;
 

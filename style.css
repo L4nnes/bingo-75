@@ -426,3 +426,325 @@ button.danger-light { background: #24161a; color: #ffdede; border-color: rgba(25
     padding-bottom: 3px !important;
   }
 }
+
+
+/* Ajuste v7 — celular compacto:
+   Mantém o bloco de controles visível e reduz a tabela ao mínimo útil
+   para aumentar o bloco central do BINGO/número sorteado. */
+
+.last-number {
+  white-space: nowrap;
+  overflow: visible;
+  word-break: keep-all;
+}
+
+@media (max-width: 920px) and (orientation: landscape) {
+  .screen-grid {
+    grid-template-columns:
+      minmax(125px, 36%)
+      14px
+      minmax(180px, 44%)
+      12px
+      minmax(48px, 7%)
+      minmax(72px, 13%) !important;
+    padding: 3px 5px 3px !important;
+  }
+
+  .history-hidden .screen-grid {
+    grid-template-columns:
+      minmax(125px, 38%)
+      14px
+      minmax(200px, 49%)
+      0
+      0
+      minmax(72px, 13%) !important;
+  }
+
+  .board-panel {
+    padding: 2px !important;
+    border-radius: 10px !important;
+  }
+
+  .draw-panel,
+  .history-panel {
+    border-radius: 10px !important;
+  }
+
+  .bingo-board {
+    gap: 1px !important;
+  }
+
+  .cell {
+    font-size: clamp(6px, 3.25vh, 14px) !important;
+    border-radius: 2px !important;
+    border-width: 1px !important;
+    letter-spacing: 0 !important;
+  }
+
+  .cell.letter {
+    font-size: clamp(6px, 2.9vh, 12px) !important;
+  }
+
+  .draw-panel {
+    padding: 3px !important;
+  }
+
+  .last-number {
+    font-size: clamp(42px, 15vw, 145px) !important;
+    letter-spacing: -0.075em !important;
+  }
+
+  .last-number.bingo-title {
+    font-size: clamp(34px, 11vw, 115px) !important;
+    letter-spacing: -0.06em !important;
+  }
+
+  .history-panel {
+    padding: 6px 4px !important;
+    overflow: hidden !important;
+  }
+
+  .recent-history {
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+
+  .controls {
+    min-width: 0;
+    padding: 3px !important;
+    gap: 4px !important;
+    align-content: start;
+  }
+
+  .controls button {
+    width: 100%;
+    min-width: 0;
+    padding: 7px 4px !important;
+    font-size: clamp(8px, 2.45vh, 11px) !important;
+    line-height: 1.05 !important;
+    white-space: normal !important;
+  }
+
+  .resize-handle {
+    z-index: 50 !important;
+    min-width: 14px !important;
+    overflow: visible !important;
+  }
+
+  .resize-handle::before {
+    width: 25px !important;
+    height: 25px !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 51;
+  }
+
+  .board-panel,
+  .draw-panel,
+  .history-panel {
+    z-index: 1;
+  }
+}
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .app-shell {
+    grid-template-rows: 16px minmax(0, 1fr) auto !important;
+  }
+
+  .screen-grid {
+    grid-template-columns:
+      minmax(110px, 34%)
+      12px
+      minmax(175px, 46%)
+      10px
+      minmax(42px, 7%)
+      minmax(66px, 13%) !important;
+    padding: 2px 4px 2px !important;
+  }
+
+  .history-hidden .screen-grid {
+    grid-template-columns:
+      minmax(110px, 36%)
+      12px
+      minmax(195px, 51%)
+      0
+      0
+      minmax(66px, 13%) !important;
+  }
+
+  .board-panel {
+    padding: 1px !important;
+    border-radius: 8px !important;
+  }
+
+  .bingo-board {
+    gap: 1px !important;
+  }
+
+  .cell {
+    font-size: clamp(5px, 2.9vh, 12px) !important;
+    border-radius: 2px !important;
+  }
+
+  .cell.letter {
+    font-size: clamp(5px, 2.45vh, 10px) !important;
+  }
+
+  .last-number {
+    font-size: clamp(38px, 14vw, 125px) !important;
+  }
+
+  .last-number.bingo-title {
+    font-size: clamp(30px, 10.5vw, 98px) !important;
+  }
+
+  .controls button {
+    padding: 5px 3px !important;
+    font-size: clamp(7px, 2.25vh, 9px) !important;
+  }
+}
+
+
+/* Ajuste v8:
+   Antes do primeiro sorteio, a tabela também fica oculta.
+   A tela inicial mostra apenas o bloco "BINGO" e os controles.
+   A tabela volta ao sortear o primeiro número ou ao ativar o modo manual. */
+
+.board-hidden .board-panel,
+.board-hidden #resize-handle-left,
+.board-hidden #resize-handle-right,
+.board-hidden .history-panel {
+  display: none !important;
+}
+
+.board-hidden .screen-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.board-hidden .draw-panel {
+  grid-column: 1 / -1;
+}
+
+.board-hidden .last-number.bingo-title {
+  font-size: clamp(72px, 18vw, 260px) !important;
+  letter-spacing: -0.06em !important;
+}
+
+/* Em celular compacto, mantém controles como bloco lateral e dá quase todo
+   o restante da tela para o BINGO inicial. */
+@media (max-width: 920px) and (orientation: landscape) {
+  .board-hidden .screen-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(72px, 13%) !important;
+    gap: 6px !important;
+  }
+
+  .board-hidden .draw-panel {
+    grid-column: auto;
+  }
+
+  .board-hidden .last-number.bingo-title {
+    font-size: clamp(44px, 18vw, 155px) !important;
+    letter-spacing: -0.06em !important;
+  }
+}
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .board-hidden .screen-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(66px, 13%) !important;
+    gap: 5px !important;
+  }
+
+  .board-hidden .last-number.bingo-title {
+    font-size: clamp(38px, 17vw, 130px) !important;
+  }
+}
+
+
+/* Ajuste v9 — restaura o redimensionamento por bolinhas.
+   A versão anterior fixava as larguras do modo celular com !important.
+   Isso impedia o JavaScript de redimensionar os blocos. */
+@media (max-width: 920px) and (orientation: landscape), (max-height: 460px) and (orientation: landscape) {
+  .screen-grid {
+    grid-template-columns:
+      minmax(110px, var(--board-fr))
+      var(--handle-width)
+      minmax(150px, var(--draw-fr))
+      var(--handle-width)
+      minmax(46px, var(--history-fr))
+      minmax(72px, 13vw) !important;
+  }
+
+  .history-hidden .screen-grid {
+    grid-template-columns:
+      minmax(110px, var(--board-fr))
+      var(--handle-width)
+      minmax(170px, 1fr)
+      0
+      0
+      minmax(72px, 13vw) !important;
+  }
+
+  .resize-handle {
+    z-index: 100 !important;
+    min-width: var(--handle-width) !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+    touch-action: none !important;
+  }
+
+  .resize-handle::before {
+    position: relative !important;
+    z-index: 101 !important;
+    width: 26px !important;
+    height: 26px !important;
+    opacity: 1 !important;
+  }
+
+  .board-panel,
+  .draw-panel,
+  .history-panel {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+}
+
+@media (max-height: 430px) and (orientation: landscape) {
+  .screen-grid {
+    grid-template-columns:
+      minmax(100px, var(--board-fr))
+      var(--handle-width)
+      minmax(145px, var(--draw-fr))
+      var(--handle-width)
+      minmax(40px, var(--history-fr))
+      minmax(66px, 13vw) !important;
+  }
+
+  .history-hidden .screen-grid {
+    grid-template-columns:
+      minmax(100px, var(--board-fr))
+      var(--handle-width)
+      minmax(165px, 1fr)
+      0
+      0
+      minmax(66px, 13vw) !important;
+  }
+}
+
+/* Tela inicial continua sem tabela e sem histórico. */
+.board-hidden .board-panel,
+.board-hidden #resize-handle-left,
+.board-hidden #resize-handle-right,
+.board-hidden .history-panel {
+  display: none !important;
+}
+
+.board-hidden .screen-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+@media (max-width: 920px) and (orientation: landscape), (max-height: 460px) and (orientation: landscape) {
+  .board-hidden .screen-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(72px, 13vw) !important;
+  }
+}

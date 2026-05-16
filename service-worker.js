@@ -1,4 +1,4 @@
-const CACHE_NAME = "bingo-75-v6";
+const CACHE_NAME = "bingo-75-v9";
 
 const FILES_TO_CACHE = [
   "./",
